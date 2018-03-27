@@ -8,28 +8,23 @@ var io = require('socket.io')(server);
 server.listen(8000);
 
 app.use(express.static(path.join(__dirname,"static")))
-var users = [];
+
 io.on('connection', function (socket) {
-
-	console.log("hello : "+socket.id);
-    users.push(socket.id);
-    console.log(users);
-	socket.on('disconnect', function(){
+socket.on('userName',function(data)
+     {
+       console.log('user'); 
+       socket.emit('userList', data);
+       socket.broadcast.emit('userList', data)
+     })
+      socket.on('sendMessage',function(userName,message)
+     {
+       console.log("send"); 
+       socket.emit('displayMsg', userName,message);
+       socket.broadcast.emit('displayMsg', userName,message)
+     })
+	 socket.on('disconnect', function(){
 		console.log("disconnect");
-        for(var i = 0 ; i<users.length; i++){
-            if(users[i]==socket.id);
-            {
-                users.splice(i,1);
-            }
-        }
-        console.log(users);
-	})
-
-	 socket.emit('userList', users);
-	socket.on('hello server', function(data){
-		console.log(data);
-	})
-
-
- 
+         socket.emit('userList', data);
+       socket.broadcast.emit('userList', data)
+     })
 });

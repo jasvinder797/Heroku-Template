@@ -1,30 +1,92 @@
+<!DOCTYPE html>
 <html>
 <head>
-	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+  <style type="text/css">
+  .wrapper {
+       margin: auto;
+        width: 60%;
+        border: 3px solid #bcbfc7;
+        padding: 10px;
+    }
+    ul
+    {
+       list-style-type: none;
+    }
+    #chatContainer
+    {
+        margin: auto;
+        width: 60%;
+        padding: 10px;
+        display: none;
 
-</head>
-    <body>
-        This is heroku template
-        First change
-        <h2>Online users</h2>
-        <ul id="users">
+    }
+  </style>
+ <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+	<title></title>
+</head> 
+<body>
+      <div class="wrapper" id="userContainer">
+        <div class="user" >
+          <br>
+            <input type="text" placeholder="Enter user name" id="userName" class="form-control">
+            <br><button onclick="saveuser();" class="btn btn btn-info">Submit</button>
+        </div>
+      </div>
+      <div  id="chatContainer"> 
+          <div class="" id="messageContainer"><ul id="users"></ul></div>
+          <div class="" >
+              <div class="col-md-10">
+                  <input type="text" placeholder="Enter user name" id="message" class="form-control">
+                </div>
+              <div class="col-md-2">
+
+               <button onclick="sendMessage();" class="btn btn btn-info">Submit</button>
+            </div>
+          </div>
+       
+     </div>
+        <!-- <ul id="users">
             
-        </ul>
-    </body>
-    <script>
-	  var socket = io.connect('http://localhost:8000');
-	  socket.on("userList",function(data){
-	  	console.log(data);
-	    var userContainer = document.getElementById("users");
-	    var rowString = "";
-	      for(var i = 0; i<data.length;i++){
-	          rowString += '<li>'+data[i]+'</li>';
-	      }
-	      userContainer.innerHTML=rowString;
-		socket.emit('hello server',"Online User List" );
+        </ul> -->
+    
+    
+</body>
 
+<script>
+  
+  var socket = io.connect('http://localhost:8000');
+   var userName="";
+  function saveuser()
+  {
+    $("#userContainer").hide();
+    $("#chatContainer").show();
+    userName = document.getElementById('userName').value;
+    console.log(userName);
+    socket.emit('userName',userName);
+  }
 
-	  })
+  function sendMessage()
+  {
+   var message = document.getElementById('message').value;
+    socket.emit('sendMessage',userName,message);
+  }
+  
+  socket.on("userList",function(data){
+  	console.log(data); 
+    //var user = document.getElementById("users");
+    var str = '<center><li>'+data+' Connected</li></center>';
+    $("#users").append(str);
+ 
+  })
+   socket.on("displayMsg",function(userName,message){
+      console.log(userName); 
+      var str = '<li>'+userName+' : '+message+'</li>';
+       $("#users").append(str);
+
+   })
+
 </script>
 </html>
-
