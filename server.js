@@ -22,9 +22,5 @@ socket.on('userName',function(data)
        socket.emit('displayMsg', userName,message);
        socket.broadcast.emit('displayMsg', userName,message)
      })
-	 socket.on('disconnect', function(){
-		console.log("disconnect");
-         socket.emit('userList', data);
-       socket.broadcast.emit('userList', data)
-     })
+	 
 });
