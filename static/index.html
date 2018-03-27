@@ -1,7 +1,30 @@
 <html>
-<head></head>
+<head>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/2.0.4/socket.io.js"></script>
+
+</head>
     <body>
         This is heroku template
         First change
+        <h2>Online users</h2>
+        <ul id="users">
+            
+        </ul>
     </body>
+    <script>
+	  var socket = io.connect('http://localhost:8000');
+	  socket.on("userList",function(data){
+	  	console.log(data);
+	    var userContainer = document.getElementById("users");
+	    var rowString = "";
+	      for(var i = 0; i<data.length;i++){
+	          rowString += '<li>'+data[i]+'</li>';
+	      }
+	      userContainer.innerHTML=rowString;
+		socket.emit('hello server',"Online User List" );
+
+
+	  })
+</script>
 </html>
+
