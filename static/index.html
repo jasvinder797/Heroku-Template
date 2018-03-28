@@ -16,7 +16,6 @@
     {
         margin: auto;
         width: 60%;
-        padding: 10px;
         display: none;
 
     }
@@ -56,34 +55,56 @@
 </body>
 
 <script>
-  
-  var socket = io.connect('http://localhost:8000');
-   var userName="";
-  function saveuser()
-  {
-    $("#userContainer").hide();
-    $("#chatContainer").show();
-    userName = document.getElementById('userName').value;
-    console.log(userName);
-    socket.emit('userName',userName);
-  }
+  var colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#FFFF99', '#00B3E6', 
+      '#E6B333', '#3366E6', '#999966', '#99FF99', '#B34D4D',
+      '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', 
+      '#FF99E6', '#CCFF1A', '#FF1A66', '#E6331A', '#33FFCC',
+      '#66994D', '#B366CC', '#4D8000', '#B33300', '#CC80CC', 
+      '#66664D', '#991AFF', '#E666FF', '#4DB3FF', '#1AB399',
+      '#E666B3', '#33991A', '#CC9999', '#B3B31A', '#00E680', 
+      '#4D8066', '#809980', '#E6FF80', '#1AFF33', '#999933',
+      '#FF3380', '#CCCC00', '#66E64D', '#4D80CC', '#9900B3', 
+      '#E64D66', '#4DB380', '#FF4D4D', '#99E6E6', '#6666FF'];
+
+      function randomColor()
+      {
+        for (var i = colorArray.length - 1; i >= 0; i--) {
+          var randomIndex = Math.floor(Math.random() * colorArray.length);
+            return colorArray[randomIndex];
+            
+          }
+      }
+
+    var socket = io.connect('http://localhost:8000');
+    var userName="",color = "";
+    function saveuser()
+    {
+      $("#userContainer").hide();
+      $("#chatContainer").show();
+      userName = document.getElementById('userName').value;
+      color = randomColor();
+      console.log(color);
+      console.log(userName);
+      socket.emit('userName',userName,color);
+    }
 
   function sendMessage()
   {
    var message = document.getElementById('message').value;
-    socket.emit('sendMessage',userName,message);
+    socket.emit('sendMessage',userName,message,color);
+      document.getElementById('message').value = "";
   }
   
-  socket.on("userList",function(data){
-  	console.log(data); 
+  socket.on("userList",function(userName,color){
+  	console.log(userName); 
     //var user = document.getElementById("users");
-    var str = '<center><li>'+data+' Connected</li></center>';
+    var str = '<center><li style="color:'+color+'">'+userName+' Connected</li></center>';
     $("#users").append(str);
  
   })
-   socket.on("displayMsg",function(userName,message){
+   socket.on("displayMsg",function(userName,message,color){
       console.log(userName); 
-      var str = '<li>'+userName+' : '+message+'</li>';
+      var str = '<li style="color:'+color+'">'+userName+' : '+message+'</li>';
        $("#users").append(str);
 
    })
