@@ -79,6 +79,7 @@
 </body>
 
 <script>
+    var userC="", userS="";
   var colorArray = ['#FF6633', '#FFB399', '#FF33FF', '#00B3E6', 
      '#3366E6', '#999966', '#99FF99', '#B34D4D',
       '#80B300', '#809900', '#E6B3B3', '#6680B3', '#66991A', 
@@ -95,10 +96,9 @@
         for (var i = colorArray.length - 1; i >= 0; i--) {
           var randomIndex = Math.floor(Math.random() * colorArray.length);
             return colorArray[randomIndex];
-            
           }
       }
-
+    
     var socket = io.connect('');
     var userName="",color = "";
     function saveuser()
@@ -106,6 +106,7 @@
       $("#userContainer").hide();
       $("#chatContainer").show();
       userName = document.getElementById('userName').value;
+        userC = userName;
       color = randomColor();
       console.log(color);
       console.log(userName);
@@ -128,10 +129,25 @@
   })
    socket.on("displayMsg",function(userName,message,color){
       console.log(userName); 
-      var str = '<li style="color:'+color+'">'+userName+' : '+message+'</li>';
-       $("#users").append(str);
+      if(userC==userName)
+        {
+            var str = '<li style="color:'+color+'; text-align: right;">'+message+' : '+userName+'</li>';
+             $("#users").append(str);
+        }
+       else
+           {
+                var str = '<li style="color:'+color+'; text-align: left;">'+userName+' : '+message+'</li>';
+             $("#users").append(str);
+           }
+      
+      
 
    })
-
+$(window).on('keydown', function(e) {
+  if (e.which == 13) {
+    sendMessage();
+    return false;
+  }
+});
 </script>
 </html>
